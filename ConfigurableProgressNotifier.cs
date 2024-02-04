@@ -143,8 +143,6 @@ public class ConfigurableProgressNotifier : IProgressNotifier
             if (IncludeStepNameOnFinish)
                 notification += step.Info.Name;
 
-            notification += "  ";
-
             if (StepWordAndStepNumberOnFinish != StepWordAndStepNumberBehaviour.IncludeAsPrefix && indentPrefix != "")
                 notification += "  =>";
 
@@ -171,10 +169,10 @@ public class ConfigurableProgressNotifier : IProgressNotifier
             }
         }
 
-        var message = string.Join(Environment.NewLine, report).Trim();
+        var message = string.Join(Environment.NewLine, report).TrimEnd();
 
         if (!string.IsNullOrWhiteSpace(message))
-            _onNotify(string.Join(Environment.NewLine, report).Trim());
+            _onNotify(string.Join(Environment.NewLine, report).TrimEnd());
     }
 
     /// <summary>
@@ -260,10 +258,7 @@ public class ConfigurableProgressNotifier : IProgressNotifier
     protected virtual string GetIndentPrefix(IStepInfo step)
     {
         var parent = step.Parent;
-        var prefix = "";
-
-        if(!GivenWhenThenAndBut.Any(standardPrefix => step.Name.ToString().StartsWith(standardPrefix)))
-            prefix += string.Concat(Enumerable.Repeat(" ", IndentLength));
+        var prefix = IndentLength < 2 ? "  " : "";
 
         while (parent is IStepInfo parentStep)
         {
